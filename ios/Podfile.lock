@@ -33,6 +33,8 @@ PODS:
   - GoogleUtilities/Logger (7.5.2):
     - GoogleUtilities/Environment
   - GTMSessionFetcher/Core (1.7.0)
+  - image_picker (0.0.1):
+    - Flutter
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
@@ -44,6 +46,7 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `Flutter`)
+  - image_picker (from `.symlinks/plugins/image_picker/ios`)
 
 SPEC REPOS:
   trunk:
@@ -64,6 +67,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_storage/ios"
   Flutter:
     :path: Flutter
+  image_picker:
+    :path: ".symlinks/plugins/image_picker/ios"
 
 SPEC CHECKSUMS:
   Firebase: 21ac9f28b09a8bdfc005f34c984fca84e7e8786d
@@ -76,6 +81,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 85fd18ff3019bb85d3f2c551d04c481dedf71fc9
   GoogleUtilities: 8de2a97a17e15b6b98e38e8770e2d129a57c0040
   GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
+  image_picker: 9aa50e1d8cdacdbed739e925b7eea16d014367e6
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
 

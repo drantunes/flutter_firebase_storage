@@ -20,21 +20,18 @@ class App extends StatelessWidget {
       title: 'Firebase Storage',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.amber,
+        primarySwatch: Colors.yellow,
+        brightness: Brightness.dark,
       ),
       home: FutureBuilder(
-        // Inicia o FlutterFire:
         future: _inicializacao,
         builder: (context, app) {
-          // Se completa, carrega a home
           if (app.connectionState == ConnectionState.done) {
             return const StoragePage();
           }
 
-          // Verificação de erros
           if (app.hasError) return const ErrorPage();
 
-          // Enquanto inicia, mostra um loading
           return const LoadingPage();
         },
       ),
