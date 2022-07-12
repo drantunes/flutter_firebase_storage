@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,6 +14,7 @@ class StoragePage extends StatefulWidget {
 
 class _StoragePageState extends State<StoragePage> {
   final FirebaseStorage storage = FirebaseStorage.instance;
+  // final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   List<Reference> refs = [];
   List<String> arquivos = [];
   bool loading = true;
@@ -28,8 +30,18 @@ class _StoragePageState extends State<StoragePage> {
   Future<UploadTask> upload(String path) async {
     File file = File(path);
     try {
-      String ref = 'images/img-${DateTime.now().toString()}.jpg';
-      return storage.ref(ref).putFile(file);
+      String ref = 'images/img-${DateTime.now().toString()}.jpeg';
+      final storageRef = FirebaseStorage.instance.ref();
+      return storageRef.child(ref).putFile(
+            file,
+            SettableMetadata(
+              cacheControl: "public, max-age=300",
+              contentType: "image/jpeg",
+              customMetadata: {
+                "user": "123",
+              },
+            ),
+          );
     } on FirebaseException catch (e) {
       throw Exception('Erro no upload: ${e.code}');
     }
@@ -47,8 +59,19 @@ class _StoragePageState extends State<StoragePage> {
             total = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           });
         } else if (snapshot.state == TaskState.success) {
-          arquivos.add(await snapshot.ref.getDownloadURL());
-          refs.add(snapshot.ref);
+          final photoRef = snapshot.ref;
+
+          // final newMetadata = SettableMetadata(
+          //   cacheControl: "public, max-age=300",
+          //   contentType: "image/jpeg",
+          // );
+          // await photoRef.updateMetadata(newMetadata);
+
+          arquivos.add(await photoRef.getDownloadURL());
+          refs.add(photoRef);
+          // final SharedPreferences prefs = await _prefs;
+          // prefs.setStringList('images', arquivos);
+
           setState(() => uploading = false);
         }
       });
@@ -62,10 +85,17 @@ class _StoragePageState extends State<StoragePage> {
   }
 
   loadImages() async {
+    // final SharedPreferences prefs = await _prefs;
+    // arquivos = prefs.getStringList('images') ?? [];
+
+    // if (arquivos.isEmpty) {
     refs = (await storage.ref('images').listAll()).items;
     for (var ref in refs) {
-      arquivos.add(await ref.getDownloadURL());
+      final arquivo = await ref.getDownloadURL();
+      arquivos.add(arquivo);
     }
+    // prefs.setStringList('images', arquivos);
+    // }
     setState(() => loading = false);
   }
 
@@ -80,9 +110,8 @@ class _StoragePageState extends State<StoragePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: uploading
-            ? Text('${total.round()}% enviado')
-            : const Text('Firebase Storage'),
+        centerTitle: true,
+        title: uploading ? Text('${total.round()}% enviado') : const Text('Firebase Storage'),
         actions: [
           uploading
               ? const Padding(
@@ -117,12 +146,12 @@ class _StoragePageState extends State<StoragePage> {
                           leading: SizedBox(
                             width: 60,
                             height: 40,
-                            child: Image.network(
-                              arquivos[index],
+                            child: Image(
+                              image: CachedNetworkImageProvider(arquivos[index]),
                               fit: BoxFit.cover,
                             ),
                           ),
-                          title: Text(refs[index].fullPath),
+                          title: Text('Image $index'),
                           trailing: IconButton(
                             icon: const Icon(Icons.delete),
                             onPressed: () => deleteImage(index),

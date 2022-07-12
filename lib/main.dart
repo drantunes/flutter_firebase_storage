@@ -1,16 +1,22 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase_storage/pages/error_page.dart';
 import 'package:flutter_firebase_storage/pages/loading_page.dart';
 import 'package:flutter_firebase_storage/pages/storage_page.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
   runApp(App());
 }
 
 class App extends StatelessWidget {
-  final Future<FirebaseApp> _inicializacao = Firebase.initializeApp();
+  final Future<FirebaseApp> _inicializacao = Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   App({Key? key}) : super(key: key);
 
